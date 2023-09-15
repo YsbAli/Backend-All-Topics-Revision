@@ -446,3 +446,95 @@ app.delete('/posts/:id', async (req, resp) => {
 
 //----------------------------------------------------------- POST CRUD Ends -------------------------------------------------------
 
+
+
+
+//----------------------------------------------------------- COMMENT CRUD STARTS -------------------------------------------------------
+
+
+
+
+
+/*
+Working with comments collection ( Endpoints / route )
+
+GET --> get/comments
+GET SIGLE ITEM ---> get/comments/:id
+POST --> post/comments
+UPDATE SINGLE ITEM ---> patch/comments/:id
+DELETE SINGLE ITEM ---> delete/comments/:id
+
+*/
+
+
+app.post('/commends', async (req, resp) => {
+    try {
+        const comments = await Comment.create(req.body)
+        return resp.send(comments)
+    }
+    catch (e) {
+        return resp.status(500).send(e.message)
+    }
+})
+
+
+app.get("/comments", async (req, resp) => {
+    try {
+        const comments = await Comment.find().lean().exec()
+        return resp.send(comments)
+    } catch (e) {
+        return resp.status(500).send(e.message)
+    }
+})
+
+app.get("/commends/:id", async (req, resp) => {
+    try {
+        const comments = await Comment.findById(req.params.id).lean().exec()
+        return resp.send(comments)
+    }
+    catch (e) {
+        return resp.status(500).send(e.message)
+    }
+})
+
+
+app.patch('/comments/:id', async (req, resp) => {
+    try {
+        const comments = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        return resp.send(comments)
+    }
+    catch (e) {
+        return resp.status(500).send(e.message)
+    }
+
+})
+
+
+
+app.delete("/comments/:id", async (req, resp) => {
+    try {
+        const comments = await Comment.findByIdAndDelete(req.params.id).lean().exec()
+
+        return resp.send(comments)
+    }
+    catch (e) {
+        return resp.status(500).send(e.message)
+    }
+})
+
+
+//-------------- COMMENT CRUD ENDS -----------------------
+
+
+
+app.listen(3002, async function () {
+    try {
+        await ConnectDB()
+        console.log("listening on port 3002")
+    }
+    catch (e) {
+        console.log("Some Error", e.message)
+    }
+})
+
+
