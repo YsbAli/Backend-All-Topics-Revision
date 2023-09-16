@@ -1,4 +1,4 @@
-// DAY6  (Mongoose Relationship)
+// DAY7  (MVC)
 
 const express = require('express')
 const mongoose = require('mongoose')
@@ -15,6 +15,8 @@ const Tag = require("./module/tag.model")
 
 
 app.use(express.json())                                      // it will read the  request and convert req.body into json objects
+
+
 
 //----------------------------------------------------------- USER CRUD Starts -------------------------------------------------------
 
