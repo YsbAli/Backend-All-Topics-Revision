@@ -18,11 +18,11 @@ DELETE SINGLE ITEM ---> delete/posts/:id
 
 const express = require('express')
 const router = express.Router()
+const Post = require('../module/post.model')
 
 
 
-
-router.post('/posts', async (req, resp) => {
+router.post('/', async (req, resp) => {
     try {
         const posts = await Post.create(req.body)
         return resp.send(posts)
@@ -33,7 +33,7 @@ router.post('/posts', async (req, resp) => {
 })
 
 
-router.get('/posts', async (req, reps) => {
+router.get('/', async (req, reps) => {
     try {
         const posts = await Post.find().lean().exec()
         return resp.send(posts)
@@ -43,7 +43,9 @@ router.get('/posts', async (req, reps) => {
     }
 })
 
-router.get('/posts/:id', async (req, resp) => {
+
+//get single item with id
+router.get('/:id', async (req, resp) => {
     try {
         const posts = await Post.findById(req.params.id).lean().exec()
 
@@ -57,7 +59,7 @@ router.get('/posts/:id', async (req, resp) => {
 
 
 
-router.patch('/posts/:id', async (req, resp) => {
+router.patch('/:id', async (req, resp) => {
     try {
         const posts = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
         return resp.send(posts)
@@ -68,7 +70,7 @@ router.patch('/posts/:id', async (req, resp) => {
 })
 
 
-router.delete('/posts/:id', async (req, resp) => {
+router.delete('/:id', async (req, resp) => {
     try {
         const posts = await Post.findByIdAndDelete(req.params.id).lean().exec()
         return resp.send(posts)
