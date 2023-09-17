@@ -14,9 +14,10 @@ DELETE SINGLE ITEM ---> delete/tags/:id
 
 const express = require('express')
 const router = express.Router()
+const Tag = require('../module/tag.model')
 
-router.post('/tags', async (req, resp) => {
 
+router.post('/', async (req, resp) => {
     try {
         const tag = await Tag.create(req.body)
         return resp.send(tag)
@@ -27,7 +28,7 @@ router.post('/tags', async (req, resp) => {
 })
 
 
-router.get("/tags", async (req, resp) => {
+router.get("/", async (req, resp) => {
     try {
         const tags = await Tag.find().lean().exec()
         return resp.send(tags)
@@ -39,7 +40,7 @@ router.get("/tags", async (req, resp) => {
 
 // finding one tag
 
-router.get("/tags/:id", async (req, resp) => {
+router.get("/:id", async (req, resp) => {
 
     try {
         const tag = await Tag.findById(req.params.id).lean().exec()
@@ -51,7 +52,7 @@ router.get("/tags/:id", async (req, resp) => {
 })
 
 
-router.patch("/tags/:id", async (req, resp) => {
+router.patch("/:id", async (req, resp) => {
     try {
         const tag = await Tag.findByIdAndUpdate(req.params.id, req.body, { new: true })
         return resp.send(tag)
@@ -63,7 +64,7 @@ router.patch("/tags/:id", async (req, resp) => {
 
 
 
-router.delete("/tag/:id", async (req, resp) => {
+router.delete("/:id", async (req, resp) => {
     try {
         const tag = await Tag.findByIdAndDelete(req.params.id)
         return resp.send(tag)
