@@ -1,190 +1,190 @@
 // DAY7  (MVC)
 
-const express = require('express')
-const mongoose = require('mongoose')
-const app = express()
+// const express = require('express')
+// const mongoose = require('mongoose')
+// const app = express()
 
 
-const ConnectDB = require('./configs/db')
-// import ConnectDB from './configs/db.js'
+// const ConnectDB = require('./configs/db')
+// // import ConnectDB from './configs/db.js'
 
-const User = require('./module/user.model')             // importing User because User CRUD needs User
-const Post = require('./module/post.model')
-const Comment = require('./module/comment.model')
-const Tag = require("./module/tag.model")
-
-
-app.use(express.json())                                      // it will read the  request and convert req.body into json objects
+// const User = require('./module/user.model')             // importing User because User CRUD needs User
+// const Post = require('./module/post.model')
+// const Comment = require('./module/comment.model')
+// const Tag = require("./module/tag.model")
 
 
-
-//----------------------------------------------------------- USER CRUD Starts -------------------------------------------------------
+// app.use(express.json())                                      // it will read the  request and convert req.body into json objects
 
 
 
-
-
-// Works with user collection ( Endpoints / route )
-
-// GET --> get/users
-// GET SIGLE ITEM ---> get/users/:id
-// POST --> post/users
-// UPDATE SINGLE ITEM ---> patch/users/:id
-// DELETE SINGLE ITEM ---> delete/users/:id
-
-
-
-
-// Post Method
-
-app.post("/users", async (req, res) => {
-    try {
-        console.log(req.body)                                    // this will print undefined 
-        const user = await User.create(req.body);               //  this will return  a single documents              //express does not khow how to read JSON data that's coming from the requrest data
-        // res.send(user)
-        return res.status(201).send(user)          //for post status code is 201 (created)
-
-    } catch (e) { console.log(e.message) }
-})
+// //----------------------------------------------------------- USER CRUD Starts -------------------------------------------------------
 
 
 
 
 
-//GET Method
+// // Works with user collection ( Endpoints / route )
 
-app.get('/users', async (req, res) => {
-    try {
-        const users = await User.find().lean().exec()
-        // return res.send(users)
-        return res.status(200).send(users)    // for get default status code is 200 (Ok)
-
-    } catch (e) { console.log(e.message) }
-
-})
+// // GET --> get/users
+// // GET SIGLE ITEM ---> get/users/:id
+// // POST --> post/users
+// // UPDATE SINGLE ITEM ---> patch/users/:id
+// // DELETE SINGLE ITEM ---> delete/users/:id
 
 
 
 
-// Only for Status Code 404
+// // Post Method
 
-app.get('/users', async (req, res) => {
-    try {
-        const users = await User.find().lean().exec();
-        if (users) {
-            res.send(users)
-        } else {
-            res.status(404).send({ message: "User Not Found" })
-        }
-    } catch (e) { console.log(e.message) }
+// app.post("/users", async (req, res) => {
+//     try {
+//         console.log(req.body)                                    // this will print undefined 
+//         const user = await User.create(req.body);               //  this will return  a single documents              //express does not khow how to read JSON data that's coming from the requrest data
+//         // res.send(user)
+//         return res.status(201).send(user)          //for post status code is 201 (created)
 
-})
-
-
-
-//getting the single Item   (method + route) --> get / users / ${variable} and the name of variable is id (Send Mongo id)
-//    :id    ---> ":" is nothing here,, this ":" is talking that this is a variable
-
-// app.get("/users/:id", async(req, resp)=>{
-//     try{
-//         // console.log(req.params)
-//         const user = await User.findById(req.params.id).lean().exec()
-//         resp.send(user)
-//     }
-//     catch(e){
-//         return resp.send(e.message)
-//     }
+//     } catch (e) { console.log(e.message) }
 // })
 
 
 
 
 
-//Finding Single Item 
+// //GET Method
 
-app.get("/users/:id", async (request, response) => {
-    try {
-        const single_data = await User.findById(request.params.id).lean().exec()
-        response.send(single_data)
-        console.log(single_data)
-    }
-    catch (e) {
-        return response.status(500).send(e.message)
-    }
-})
+// app.get('/users', async (req, res) => {
+//     try {
+//         const users = await User.find().lean().exec()
+//         // return res.send(users)
+//         return res.status(200).send(users)    // for get default status code is 200 (Ok)
 
+//     } catch (e) { console.log(e.message) }
 
-// Search One Item by Name
-
-app.get("/users/:name", async (req, resp) => {
-    try {
-        const SearchBY_name = await User.find({ first_name: req.params.name }).lean().exec()
-        resp.send(SearchBY_name)
-        console.log(SearchBY_name)
-    }
-    catch (e) {
-        resp.status(500).send(e.message)
-    }
-})
-
-
-//  ------- Patch API
-
-//FindByIdAndUpdate : it finds the documents, then it does the update but after update it does not getting the document or can't refatching the documents  
-//  SO, to handle this we have to do {new:true} ---> it's refatching the  documents
-
-
-app.patch("/users/:id", async (req, resp) => {
-    try {
-        const Patch_Api = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }).lean().exec()
-        resp.status(200).send(Patch_Api)
-        console.log(Patch_Api)
-    }
-    catch (e) {
-        resp.status(500).send(e.message)
-    }
-})
-
-
-//Delete Operation
-
-//Delete One
-
-app.delete("/users/:id", async (req, resp) => {
-
-    try {
-        const DeleteItem = await User.findByIdAndDelete(req.params.id).lean().exec()
-        // resp.send(DeleteItem)
-        res.status(200).send(DeleteItem)
-        console.log(DeleteItem)
-
-    } catch (e) {
-        resp.status(500).send(e.message)
-    }
-
-})
-
-// Delete Many
-
-
-app.delete("/users/:id", async (req, resp) => {
-
-    try {
-        const DeleteItem = await User.deleteMany({ age: 30 }).lean().exec()    //delete those items whose age is 30
-        // resp.send(DeleteItem)
-        resp.status(200).send(DeleteItem)
-        console.log(DeleteItem)
-
-    } catch (e) {
-        resp.status(500).send(e.message)
-    }
-
-})
+// })
 
 
 
 
-//----------------------------------------------------------- USER CRUD Ends -------------------------------------------------------
+// // Only for Status Code 404
+
+// app.get('/users', async (req, res) => {
+//     try {
+//         const users = await User.find().lean().exec();
+//         if (users) {
+//             res.send(users)
+//         } else {
+//             res.status(404).send({ message: "User Not Found" })
+//         }
+//     } catch (e) { console.log(e.message) }
+
+// })
+
+
+
+// //getting the single Item   (method + route) --> get / users / ${variable} and the name of variable is id (Send Mongo id)
+// //    :id    ---> ":" is nothing here,, this ":" is talking that this is a variable
+
+// // app.get("/users/:id", async(req, resp)=>{
+// //     try{
+// //         // console.log(req.params)
+// //         const user = await User.findById(req.params.id).lean().exec()
+// //         resp.send(user)
+// //     }
+// //     catch(e){
+// //         return resp.send(e.message)
+// //     }
+// // })
+
+
+
+
+
+// //Finding Single Item 
+
+// app.get("/users/:id", async (request, response) => {
+//     try {
+//         const single_data = await User.findById(request.params.id).lean().exec()
+//         response.send(single_data)
+//         console.log(single_data)
+//     }
+//     catch (e) {
+//         return response.status(500).send(e.message)
+//     }
+// })
+
+
+// // Search One Item by Name
+
+// app.get("/users/:name", async (req, resp) => {
+//     try {
+//         const SearchBY_name = await User.find({ first_name: req.params.name }).lean().exec()
+//         resp.send(SearchBY_name)
+//         console.log(SearchBY_name)
+//     }
+//     catch (e) {
+//         resp.status(500).send(e.message)
+//     }
+// })
+
+
+// //  ------- Patch API
+
+// //FindByIdAndUpdate : it finds the documents, then it does the update but after update it does not getting the document or can't refatching the documents  
+// //  SO, to handle this we have to do {new:true} ---> it's refatching the  documents
+
+
+// app.patch("/users/:id", async (req, resp) => {
+//     try {
+//         const Patch_Api = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }).lean().exec()
+//         resp.status(200).send(Patch_Api)
+//         console.log(Patch_Api)
+//     }
+//     catch (e) {
+//         resp.status(500).send(e.message)
+//     }
+// })
+
+
+// //Delete Operation
+
+// //Delete One
+
+// app.delete("/users/:id", async (req, resp) => {
+
+//     try {
+//         const DeleteItem = await User.findByIdAndDelete(req.params.id).lean().exec()
+//         // resp.send(DeleteItem)
+//         res.status(200).send(DeleteItem)
+//         console.log(DeleteItem)
+
+//     } catch (e) {
+//         resp.status(500).send(e.message)
+//     }
+
+// })
+
+// // Delete Many
+
+
+// app.delete("/users/:id", async (req, resp) => {
+
+//     try {
+//         const DeleteItem = await User.deleteMany({ age: 30 }).lean().exec()    //delete those items whose age is 30
+//         // resp.send(DeleteItem)
+//         resp.status(200).send(DeleteItem)
+//         console.log(DeleteItem)
+
+//     } catch (e) {
+//         resp.status(500).send(e.message)
+//     }
+
+// })
+
+
+
+
+// //----------------------------------------------------------- USER CRUD Ends -------------------------------------------------------
 
 
 
@@ -204,148 +204,148 @@ DELETE SINGLE ITEM ---> delete/tags/:id
 
 */
 
-app.post('/tags', async (req, resp) => {
+// app.post('/tags', async (req, resp) => {
 
-    try {
-        const tag = await Tag.create(req.body)
-        return resp.send(tag)
-    } catch (e) {
-        return resp.status(500).send(e.message)
-    }
+//     try {
+//         const tag = await Tag.create(req.body)
+//         return resp.send(tag)
+//     } catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
 
-})
-
-
-
-app.get("/tags", async (req, resp) => {
-    try {
-        const tags = await Tag.find().lean().exec()
-        return resp.send(tags)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
-
-// finding one tag
-
-app.get("/tags/:id", async (req, resp) => {
-
-    try {
-        const tag = await Tag.findById(req.params.id).lean().exec()
-        return resp.send(tag)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
-
-
-app.patch("/tags/:id", async (req, resp) => {
-    try {
-        const tag = await Tag.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        return resp.send(tag)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
+// })
 
 
 
-app.delete("/tag/:id", async (req, resp) => {
-    try {
-        const tag = await Tag.findByIdAndDelete(req.params.id)
-        return resp.send(tag)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
+// app.get("/tags", async (req, resp) => {
+//     try {
+//         const tags = await Tag.find().lean().exec()
+//         return resp.send(tags)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
+
+// // finding one tag
+
+// app.get("/tags/:id", async (req, resp) => {
+
+//     try {
+//         const tag = await Tag.findById(req.params.id).lean().exec()
+//         return resp.send(tag)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
+
+
+// app.patch("/tags/:id", async (req, resp) => {
+//     try {
+//         const tag = await Tag.findByIdAndUpdate(req.params.id, req.body, { new: true })
+//         return resp.send(tag)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
 
 
 
-
-//----------------------------------------------------------- TAG CRUD Ends -------------------------------------------------------
+// app.delete("/tag/:id", async (req, resp) => {
+//     try {
+//         const tag = await Tag.findByIdAndDelete(req.params.id)
+//         return resp.send(tag)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
 
 
 
 
-
-
-//----------------------------------------------------------- POST CRUD Starts -------------------------------------------------------
-
-
-
-
-/*
-Working with posts collection ( Endpoints / route )
-
-GET --> get/posts
-GET SIGLE ITEM ---> get/posts/:id
-POST --> post/posts
-UPDATE SINGLE ITEM ---> patch/posts/:id
-DELETE SINGLE ITEM ---> delete/posts/:id
-
-*/
+// //----------------------------------------------------------- TAG CRUD Ends -------------------------------------------------------
 
 
 
 
-app.post('/posts', async (req, resp) => {
-    try {
-        const posts = await Post.create(req.body)
-        return resp.send(posts)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
 
 
-app.get('/posts', async (req, reps) => {
-    try {
-        const posts = await Post.find().lean().exec()
-        return resp.send(posts)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
-
-app.get('/posts/:id', async (req, resp) => {
-    try {
-        const posts = await Post.findById(req.params.id).lean().exec()
-
-        return resp.send(posts)
-
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
+// //----------------------------------------------------------- POST CRUD Starts -------------------------------------------------------
 
 
 
-app.patch('/posts/:id', async (req, resp) => {
-    try {
-        const posts = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        return resp.send(posts)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
+
+// /*
+// Working with posts collection ( Endpoints / route )
+
+// GET --> get/posts
+// GET SIGLE ITEM ---> get/posts/:id
+// POST --> post/posts
+// UPDATE SINGLE ITEM ---> patch/posts/:id
+// DELETE SINGLE ITEM ---> delete/posts/:id
+
+// */
 
 
-app.delete('/posts/:id', async (req, resp) => {
-    try {
-        const posts = await Post.findByIdAndDelete(req.params.id).lean().exec()
-        return resp.send(posts)
-    } catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
+
+
+// app.post('/posts', async (req, resp) => {
+//     try {
+//         const posts = await Post.create(req.body)
+//         return resp.send(posts)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
+
+
+// app.get('/posts', async (req, reps) => {
+//     try {
+//         const posts = await Post.find().lean().exec()
+//         return resp.send(posts)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
+
+// app.get('/posts/:id', async (req, resp) => {
+//     try {
+//         const posts = await Post.findById(req.params.id).lean().exec()
+
+//         return resp.send(posts)
+
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
+
+
+
+// app.patch('/posts/:id', async (req, resp) => {
+//     try {
+//         const posts = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true })
+//         return resp.send(posts)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
+
+
+// app.delete('/posts/:id', async (req, resp) => {
+//     try {
+//         const posts = await Post.findByIdAndDelete(req.params.id).lean().exec()
+//         return resp.send(posts)
+//     } catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
 
 
 
@@ -372,64 +372,112 @@ DELETE SINGLE ITEM ---> delete/commands/:id
 */
 
 
-app.post('/commends', async (req, resp) => {
-    try {
-        const commends = await Comment.create(req.body)
-        return resp.send(commends)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
+// app.post('/commends', async (req, resp) => {
+//     try {
+//         const commends = await Comment.create(req.body)
+//         return resp.send(commends)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
 
 
-app.get("/commends", async (req, resp) => {
-    try {
-        const commends = await Comment.find().lean().exec()
-        return resp.send(commends)
-    } catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
+// app.get("/commends", async (req, resp) => {
+//     try {
+//         const commends = await Comment.find().lean().exec()
+//         return resp.send(commends)
+//     } catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
 
-app.get("/commends/:id", async (req, resp) => {
-    try {
-        const commends = await Comment.findById(req.params.id).lean().exec()
-        return resp.send(commends)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
-
-
-app.patch('/commends/:id', async (req, resp) => {
-    try {
-        const commends = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        return resp.send(commends)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-
-})
+// app.get("/commends/:id", async (req, resp) => {
+//     try {
+//         const commends = await Comment.findById(req.params.id).lean().exec()
+//         return resp.send(commends)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
 
 
+// app.patch('/commends/:id', async (req, resp) => {
+//     try {
+//         const commends = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
+//         return resp.send(commends)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
 
-app.delete("/commends/:id", async (req, resp) => {
-    try {
-        const commends = await Comment.findByIdAndDelete(req.params.id).lean().exec()
+// })
 
-        return resp.send(commends)
-    }
-    catch (e) {
-        return resp.status(500).send(e.message)
-    }
-})
+
+
+// app.delete("/commends/:id", async (req, resp) => {
+//     try {
+//         const commends = await Comment.findByIdAndDelete(req.params.id).lean().exec()
+
+//         return resp.send(commends)
+//     }
+//     catch (e) {
+//         return resp.status(500).send(e.message)
+//     }
+// })
 
 
 //-------------- COMMEND CRUD ENDS -----------------------
 
+
+
+// app.listen(3002, async function () {
+//     try {
+//         await ConnectDB()
+//         console.log("listening on port 3002")
+//     }
+//     catch (e) {
+//         console.log("Some Error", e.message)
+//     }
+// })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  Soo the fresh code will be like this : 
+
+
+const express = require('express')
+const app = express()
+
+const ConnectDB = require('./configs/db')
+// import ConnectDB from './configs/db.js'
+
+//import the controllers
+const UserController = require('./Controllers/user.controller')
+const PostController = require('./Controllers/post.controller')
+const TagController = require('./Controllers/tag.controller')
+const CommnetController = require('./Controllers/comment.controller')
+
+
+app.use(express.json())                                      // it will read the  request and convert req.body into json objects
+
+// use the controllers
+app.use("/users", UserController)
+app.use("/post", PostController)
+app.use("/tags", TagController)
+app.use("/commnets", CommnetController)
 
 
 app.listen(3002, async function () {
@@ -441,4 +489,6 @@ app.listen(3002, async function () {
         console.log("Some Error", e.message)
     }
 })
+
+
 

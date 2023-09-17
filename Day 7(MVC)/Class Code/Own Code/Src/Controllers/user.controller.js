@@ -17,10 +17,11 @@
 
 const express = require('express')
 const router = express.Router()
+const User = require('../module/user.model')
 
 // Post Method
 
-router.post("/users", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         console.log(req.body)                                    // this will print undefined 
         const user = await User.create(req.body);               //  this will return  a single documents              //express does not khow how to read JSON data that's coming from the requrest data
@@ -33,7 +34,7 @@ router.post("/users", async (req, res) => {
 
 //GET Method
 
-router.get('/users', async (req, res) => {
+router.get('', async (req, res) => {
     try {
         const users = await User.find().lean().exec()
         // return res.send(users)
@@ -45,7 +46,7 @@ router.get('/users', async (req, res) => {
 
 // Only for Status Code 404
 
-router.get('/users', async (req, res) => {
+router.get('', async (req, res) => {
     try {
         const users = await User.find().lean().exec();
         if (users) {
@@ -76,7 +77,7 @@ router.get('/users', async (req, res) => {
 
 //Finding Single Item 
 
-router.get("/users/:id", async (request, response) => {
+router.get("/:id", async (request, response) => {
     try {
         const single_data = await User.findById(request.params.id).lean().exec()
         response.send(single_data)
@@ -90,7 +91,7 @@ router.get("/users/:id", async (request, response) => {
 
 // Search One Item by Name
 
-router.get("/users/:name", async (req, resp) => {
+router.get("/:name", async (req, resp) => {
     try {
         const SearchBY_name = await User.find({ first_name: req.params.name }).lean().exec()
         resp.send(SearchBY_name)
@@ -108,7 +109,7 @@ router.get("/users/:name", async (req, resp) => {
 //  SO, to handle this we have to do {new:true} ---> it's refatching the  documents
 
 
-router.patch("/users/:id", async (req, resp) => {
+router.patch("/:id", async (req, resp) => {
     try {
         const Patch_Api = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }).lean().exec()
         resp.status(200).send(Patch_Api)
@@ -124,7 +125,7 @@ router.patch("/users/:id", async (req, resp) => {
 
 //Delete One
 
-router.delete("/users/:id", async (req, resp) => {
+router.delete("/:id", async (req, resp) => {
 
     try {
         const DeleteItem = await User.findByIdAndDelete(req.params.id).lean().exec()
@@ -141,7 +142,7 @@ router.delete("/users/:id", async (req, resp) => {
 // Delete Many
 
 
-router.delete("/users/:id", async (req, resp) => {
+router.delete("/:id", async (req, resp) => {
 
     try {
         const DeleteItem = await User.deleteMany({ age: 30 }).lean().exec()    //delete those items whose age is 30

@@ -1,7 +1,9 @@
-const mongoose = require('mongoose')
 
 
 // ------------------------------------- Post Model-----------------------------------------------------
+
+
+const mongoose = require('mongoose')
 
 const PostSchema = new mongoose.Schema({
     title: { type: String, require: true },

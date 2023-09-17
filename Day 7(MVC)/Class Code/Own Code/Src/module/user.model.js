@@ -1,12 +1,11 @@
-const mongoose = require('mongoose')
 
 
 // ------------------------------------- User Model-----------------------------------------------------
 
 
+const mongoose = require('mongoose')
+
 // Schema + model
-
-
 
 const userSchema = new mongoose.Schema({
     id: { type: Number, require: true, unique: true },  //not _id
