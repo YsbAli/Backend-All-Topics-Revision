@@ -465,11 +465,14 @@ const ConnectDB = require('./configs/db')
 // import ConnectDB from './configs/db.js'
 
 //import the controllers
-const UserController = require('./Controllers/user.controller')
-const PostController = require('./Controllers/post.controller')
-const TagController = require('./Controllers/tag.controller')
-const CommnetController = require('./Controllers/comment.controller')
+// const UserController = require('./Controllers/user.controller')
+// const PostController = require('./Controllers/post.controller')
+// const TagController = require('./Controllers/tag.controller')
+// const CommnetController = require('./Controllers/comment.controller')
 
+
+// Modify/New way to import all controllers
+const { UserController, PostController, TagController, CommnetController } = require('./Controllers/Main.exportsAll')
 
 app.use(express.json())                                      // it will read the  request and convert req.body into json objects
 
