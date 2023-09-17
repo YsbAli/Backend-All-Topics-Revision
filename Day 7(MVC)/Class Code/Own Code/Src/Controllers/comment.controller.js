@@ -22,8 +22,9 @@ DELETE SINGLE ITEM ---> delete/commands/:id
 
 const express = require('express')
 const router = express.Router()
+const Comment = require('../module/comment.model')
 
-router.post('/commends', async (req, resp) => {
+router.post("", async (req, resp) => {
     try {
         const commends = await Comment.create(req.body)
         return resp.send(commends)
@@ -34,7 +35,7 @@ router.post('/commends', async (req, resp) => {
 })
 
 
-router.get("/commends", async (req, resp) => {
+router.get("/", async (req, resp) => {
     try {
         const commends = await Comment.find().lean().exec()
         return resp.send(commends)
@@ -43,7 +44,7 @@ router.get("/commends", async (req, resp) => {
     }
 })
 
-router.get("/commends/:id", async (req, resp) => {
+router.get("/:id", async (req, resp) => {
     try {
         const commends = await Comment.findById(req.params.id).lean().exec()
         return resp.send(commends)
@@ -54,7 +55,7 @@ router.get("/commends/:id", async (req, resp) => {
 })
 
 
-router.patch('/commends/:id', async (req, resp) => {
+router.patch('/:id', async (req, resp) => {
     try {
         const commends = await Comment.findByIdAndUpdate(req.params.id, req.body, { new: true })
         return resp.send(commends)
@@ -67,7 +68,7 @@ router.patch('/commends/:id', async (req, resp) => {
 
 
 
-router.delete("/commends/:id", async (req, resp) => {
+router.delete("/:id", async (req, resp) => {
     try {
         const commends = await Comment.findByIdAndDelete(req.params.id).lean().exec()
 
