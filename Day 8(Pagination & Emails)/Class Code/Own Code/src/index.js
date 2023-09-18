@@ -4,6 +4,10 @@ const app = express()
 
 const ConnectDB = require('./config/db')
 
+const UserController = require('./controllers/user.controller')
+
+app.use('/users', UserController)
+
 app.listen(4000, async () => {
 
     try {
