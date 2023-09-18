@@ -51,31 +51,98 @@
 
 
 
-// Create it dynamik 
+// // Create it dynamik 
+
+// const transporter = require('./config/mail')
+
+// const SendVarificationEmail = async ({ from, to,users }) => {
+//     await transporter.sendMail({
+//         from,           //from : from   --> if key and value is same then no need to write value
+//         to,             // to : to
+//         subject: `Hello ${users.first_Name} ${users.last_Name} Welcome to Our Websites`,
+//         text: `Hello ${users.first_Name} ${users.last_Name} Please verify your email`,
+//         html: `<h1>Hello ${users.first_Name} ${users.last_Name} Please verify your email</h1>`
+//     });
+// }
+
+
+// const WelcomeEmail = async ({ from, to,users }) => {
+//     await transporter.sendMail({
+//         from,           //from : from   --> if key and value is same then no need to write value
+//         to,             // to : to
+//         subject: `Hello ${users.first_Name} ${users.last_Name} Welcome to Our Websites`,
+//         text: `Hello ${users.first_Name} ${users.last_Name} Welcome !!`,
+//         html: `<h1>Hello ${users.first_Name} ${users.last_Name} Welcome to ShanTech</h1>`
+//     });
+// }
+
+
+
+// module.exports = { SendVarificationEmail, WelcomeEmail }
+
+
+
+
+
+// Sending Attachments  ----- Create it dynamik 
 
 const transporter = require('./config/mail')
 
-const SendVarificationEmail = async ({ from, to,users }) => {
+const SendMail = async ({ from, to, subject, text, html, attachments }) => {
+    await transporter.sendMail({
+        from,           //from : from   --> if key and value is same then no need to write value
+        to,             // to : to
+        subject,
+        text,
+        html,
+        attachments
+    });
+}
+
+
+
+const SendVarificationEmail = async ({ from, to, users, attachments }) => {
     await transporter.sendMail({
         from,           //from : from   --> if key and value is same then no need to write value
         to,             // to : to
         subject: `Hello ${users.first_Name} ${users.last_Name} Welcome to Our Websites`,
         text: `Hello ${users.first_Name} ${users.last_Name} Please verify your email`,
-        html: `<h1>Hello ${users.first_Name} ${users.last_Name} Please verify your email</h1>`
+        html: `<h1>Hello ${users.first_Name} ${users.last_Name} Please verify your email</h1>`,
+        attachments,
     });
 }
 
 
-const WelcomeEmail = async ({ from, to,users }) => {
+const WelcomeEmail = async ({ from, to, users, attachments }) => {
     await transporter.sendMail({
         from,           //from : from   --> if key and value is same then no need to write value
         to,             // to : to
         subject: `Hello ${users.first_Name} ${users.last_Name} Welcome to Our Websites`,
         text: `Hello ${users.first_Name} ${users.last_Name} Welcome !!`,
-        html: `<h1>Hello ${users.first_Name} ${users.last_Name} Welcome to ShanTech</h1>`
+        html: `<h1>Hello ${users.first_Name} ${users.last_Name} Welcome to ShanTech</h1>`,
+        attachments,
     });
 }
 
 
 
-module.exports = { SendVarificationEmail, WelcomeEmail }
+module.exports = { SendMail, SendVarificationEmail, WelcomeEmail }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

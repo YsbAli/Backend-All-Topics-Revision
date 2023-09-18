@@ -277,52 +277,138 @@
 
 
 
-//  This is Fresh and Advanced Code For Sending Email
+// //  This is Fresh and Advanced Code For Sending Email
 
+
+
+// const express = require('express')
+
+// const EventEmitter = require('events')
+
+
+// const User = require("../model/user.model")
+
+// const { SendVarificationEmail, WelcomeEmail } = require('../utils')
+
+
+// const evnetsEmiter = new EventEmitter()
+
+
+
+// const router = express.Router()
+
+
+
+// // Sent Welcome Email
+
+// router.post('', async (req, resp) => {
+//     try {
+//         const users = await User.create(req.body)
+//         console.log(users)
+
+//         // await SendMail({
+//         //     from: "admin@shantech.com",
+//         //     to: users.email,           //to the users email
+//         //     subject: "Welcome You Our Websites!",
+//         //     text: "Please Varify your Email Address!",
+//         //     html: "<h1> Please Varify your Email Address!</h1>"
+//         // })
+
+//         //Varification Email
+
+//         // await SendVarificationEmail({
+//         //     from: "admin@shantech.com",
+//         //     to: users.email,           //to the users email
+//         //     subject: "Welcome You Our Websites!",
+//         //     text: "Please Varify your Email Address!",
+//         //     html: "<h1> Please Varify your Email Address!</h1>"
+//         // })
+
+//         //varification email is sent to user.....on is eventlistener,
+//         evnetsEmiter.on("User Registered", SendVarificationEmail)
+
+//         //welcome email is send to user
+//         evnetsEmiter.on("User Registered", WelcomeEmail)
+
+
+
+//         //whenever User Registered fired,,, I want to trigger both of the function
+//         evnetsEmiter.emit("User Registered", { from: "Admin@ShanTech.com", to: users.email, users })
+
+
+//         return resp.send("Send Mail")
+//     }
+//     catch (err) {
+//         return resp.send(err.message)
+//     }
+// })
+
+
+// router.get('', async (req, resp) => {
+//     try {
+
+//         const page = req.query.page || 1
+//         const size = req.query.size || 15
+
+//         const query = { gender: "Female" }
+
+//         const users = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+
+//         const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
+
+//         return resp.status(200).send({ users, TotalPages })
+//     }
+//     catch (err) {
+//         return resp.status(500).send(err.message)
+//     }
+
+// })
+
+
+
+
+
+// module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//  This is Fresh and Advanced Code For Sending Email
+// Now we Will se how we can send email with attachment
 
 
 const express = require('express')
 
 const EventEmitter = require('events')
 
+const path = require('path')
 
 const User = require("../model/user.model")
 
-const { SendVarificationEmail, WelcomeEmail } = require('../utils')
-
+const { SendMail, SendVarificationEmail, WelcomeEmail } = require('../utils')
 
 const evnetsEmiter = new EventEmitter()
-
-
 
 const router = express.Router()
 
 
-
-// Sent Welcome Email
-
 router.post('', async (req, resp) => {
     try {
         const users = await User.create(req.body)
-        console.log(users)
+        // console.log(users)
 
-        // await SendMail({
-        //     from: "admin@shantech.com",
-        //     to: users.email,           //to the users email
-        //     subject: "Welcome You Our Websites!",
-        //     text: "Please Varify your Email Address!",
-        //     html: "<h1> Please Varify your Email Address!</h1>"
-        // })
-
-        //Varification Email
-
-        // await SendVarificationEmail({
-        //     from: "admin@shantech.com",
-        //     to: users.email,           //to the users email
-        //     subject: "Welcome You Our Websites!",
-        //     text: "Please Varify your Email Address!",
-        //     html: "<h1> Please Varify your Email Address!</h1>"
-        // })
+        evnetsEmiter.on("User Registerd SendMail", SendMail)
 
         //varification email is sent to user.....on is eventlistener,
         evnetsEmiter.on("User Registered", SendVarificationEmail)
@@ -330,10 +416,24 @@ router.post('', async (req, resp) => {
         //welcome email is send to user
         evnetsEmiter.on("User Registered", WelcomeEmail)
 
-
-
         //whenever User Registered fired,,, I want to trigger both of the function
-        evnetsEmiter.emit("User Registered", { from: "Admin@ShanTech.com", to: users.email, users })
+        evnetsEmiter.emit("User Registered",
+            {
+                from: "Admin@ShanTech.com",
+                to: users.email,
+                users,
+                // attachments: [{
+                //     // file on disk as an attachment
+                //     filename: 'name.txt',
+                //     path: '/path/to/file.txt' // stream this file
+                // }]
+
+                attachments: [{
+                    filename: "name.txt",
+                    path: path.join(__dirname,"../name.txt")
+                }]
+
+            })
 
 
         return resp.send("Send Mail")
@@ -364,8 +464,17 @@ router.get('', async (req, resp) => {
 
 })
 
-
-
-
-
 module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+
