@@ -276,40 +276,64 @@
 
 
 
+
 //  This is Fresh and Advanced Code For Sending Email
 
 
 
 const express = require('express')
+
+const EventEmitter = require('events')
+
+
 const User = require("../model/user.model")
 
-const { SendMail } = require('../utils')
+const { SendVarificationEmail, WelcomeEmail } = require('../utils')
+
+
+const evnetsEmiter = new EventEmitter()
+
 
 
 const router = express.Router()
 
 
-// Optimised and advanced code....
 
+// Sent Welcome Email
 
 router.post('', async (req, resp) => {
     try {
         const users = await User.create(req.body)
         console.log(users)
 
-        await SendMail({
-            from: "admin@shantech.com",
-            to: users.email,           //to the users email
-            subject: "Welcome You Our Websites!",
-            text: "Please Varify your Email Address!",
-            html: "<h1> Please Varify your Email Address!</h1>"
-        })
+        // await SendMail({
+        //     from: "admin@shantech.com",
+        //     to: users.email,           //to the users email
+        //     subject: "Welcome You Our Websites!",
+        //     text: "Please Varify your Email Address!",
+        //     html: "<h1> Please Varify your Email Address!</h1>"
+        // })
 
-        // from: '"Fred Foo 👻" <foo@example.com>', // sender address
-        // to: "bar@example.com, baz@example.com", // list of receivers
-        // subject: "Hello ✔", // Subject line
-        // text: "Hello world?", // plain text body
-        // html: "<h1> Hello Buddy! This is for <h2>NodeMailer</h2>testing</h1>", // html body
+        //Varification Email
+
+        // await SendVarificationEmail({
+        //     from: "admin@shantech.com",
+        //     to: users.email,           //to the users email
+        //     subject: "Welcome You Our Websites!",
+        //     text: "Please Varify your Email Address!",
+        //     html: "<h1> Please Varify your Email Address!</h1>"
+        // })
+
+        //varification email is sent to user.....on is eventlistener,
+        evnetsEmiter.on("User Registered", SendVarificationEmail)
+
+        //welcome email is send to user
+        evnetsEmiter.on("User Registered", WelcomeEmail)
+
+
+
+        //whenever User Registered fired,,, I want to trigger both of the function
+        evnetsEmiter.emit("User Registered", { from: "Admin@ShanTech.com", to: users.email, users })
 
 
         return resp.send("Send Mail")
@@ -318,7 +342,6 @@ router.post('', async (req, resp) => {
         return resp.send(err.message)
     }
 })
-
 
 
 router.get('', async (req, resp) => {
