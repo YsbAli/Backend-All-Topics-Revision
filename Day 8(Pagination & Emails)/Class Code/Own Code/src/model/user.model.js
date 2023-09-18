@@ -20,4 +20,10 @@ const UserSchema = new mongoose.Schema({
 
 
 // const User = mongoose.model("user", UserSchema)    //user: users
-module.exports = mongoose.model("user", UserSchema)    //user: users
+
+
+//userdata collection
+// module.exports = mongoose.model("userdata", UserSchema)    //userdata: userdatas
+
+//user collection
+module.exports = mongoose.model("user", UserSchema)    //userdata: userdatas

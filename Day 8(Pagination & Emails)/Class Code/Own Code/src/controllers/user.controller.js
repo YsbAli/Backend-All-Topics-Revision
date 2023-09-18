@@ -26,29 +26,66 @@ const User = require("../model/user.model")
 
 
 
-// Pagination System
+// // Pagination System
+
+
+// router.get('', async (req, resp) => {
+//     try {
+//         //pagination
+//         const page = req.query.page || 1
+//         const size = req.query || 15
+
+//         //  page = 1 then (page - 1) = 0, then skip 0 items , limit (size) //1 - 15 items
+//         //  page = 2 then (page - 1 ) = 1,,, skip = ((page - 1 ) * size) = 15 items and limit (size) // 16-30 items 
+
+
+//         // //using skip and limit
+//         const userdata = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+
+
+//         // // Total Documents
+//         // const TotalDocuments = await User.find().countDocuments()
+
+
+//         // TotalPages  (Math.ceil will give us the Upper Value total number with out decimal number)
+//         const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
+
+//         return resp.status(200).send({ userdata, TotalPages })
+//     }
+//     catch (err) {
+//         return resp.status(500).send(err.message)
+//     }
+
+// })
+
+
+
+// Pagination System 
 
 router.get('', async (req, resp) => {
     try {
-        //pagination
+
         const page = req.query.page || 1
-        const size = req.query || 15
+        const size = req.query.size || 15
 
-        //  page = 1 then (page - 1) = 0, then skip 0 items , limit (size) //1 - 15 items
-        //  page = 2 then (page - 1 ) = 1,,, skip = ((page - 1 ) * size) = 15 items and limit (size) // 16-30 items 
+        const query = { gender: "Female" }
 
+        // skip() and limit()
+        // const userdata = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+        const userdata = await User.find(query).skip((page - 1) * size).limit(size).lean().exec()
+        // console.log(userdata)
 
-        //using skip and limit
-        const userdata = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+        // const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
+        const TotalPages = Math.ceil((await User.find(query).countDocuments()) / size)
+        // console.log(TotalPages)
 
-        return resp.status(200).send({ userdata })
+        return resp.status(200).send({ userdata, TotalPages })
     }
     catch (err) {
         return resp.status(500).send(err.message)
     }
 
 })
-
 
 router.post('/', async (req, resp) => {
     try {
@@ -62,9 +99,5 @@ router.post('/', async (req, resp) => {
     }
 
 })
-
-
-
-
 
 module.exports = router;
