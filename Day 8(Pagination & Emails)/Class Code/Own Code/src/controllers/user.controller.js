@@ -1,54 +1,83 @@
 
-const express = require('express')
+// const express = require('express')
 
-const router = express.Router()
+// const router = express.Router()
 
-const User = require("../model/user.model")
+// const User = require("../model/user.model")
 
-// app.get  ---> we don't use app.get ,,,,we use router.get ---> because app is whole application object which is a very very big object,,,
-// but here, in the controller file we only want to do the get post put path delete ,,besially the CRUD http routes, and that's why we are using the router which is going to a smaller object, that's why we use router  
+// // app.get  ---> we don't use app.get ,,,,we use router.get ---> because app is whole application object which is a very very big object,,,
+// // but here, in the controller file we only want to do the get post put path delete ,,besially the CRUD http routes, and that's why we are using the router which is going to a smaller object, that's why we use router  
 
 
-//our router will be :  /users,,,, /users is defined in app.use there, that's why use here only "/" or ""
+// //our router will be :  /users,,,, /users is defined in app.use there, that's why use here only "/" or ""
+
+// // router.get('', async (req, resp) => {
+// //     try {
+// //         const userdata = await User.find().lean().exec()
+// //         // return resp.status(200).send(user)
+// //         return resp.status(200).send({ userdata })
+// //     }
+// //     catch (err) {
+// //         return resp.status(500).send(err.message)
+// //     }
+
+// // })
+
+
+
+
+// // // Pagination System
+
+
+// // router.get('', async (req, resp) => {
+// //     try {
+// //         //pagination
+// //         const page = req.query.page || 1
+// //         const size = req.query || 15
+
+// //         //  page = 1 then (page - 1) = 0, then skip 0 items , limit (size) //1 - 15 items
+// //         //  page = 2 then (page - 1 ) = 1,,, skip = ((page - 1 ) * size) = 15 items and limit (size) // 16-30 items 
+
+
+// //         // //using skip and limit
+// //         const userdata = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+
+
+// //         // // Total Documents
+// //         // const TotalDocuments = await User.find().countDocuments()
+
+
+// //         // TotalPages  (Math.ceil will give us the Upper Value total number with out decimal number)
+// //         const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
+
+// //         return resp.status(200).send({ userdata, TotalPages })
+// //     }
+// //     catch (err) {
+// //         return resp.status(500).send(err.message)
+// //     }
+
+// // })
+
+
+
+// // Pagination System 
 
 // router.get('', async (req, resp) => {
 //     try {
-//         const userdata = await User.find().lean().exec()
-//         // return resp.status(200).send(user)
-//         return resp.status(200).send({ userdata })
-//     }
-//     catch (err) {
-//         return resp.status(500).send(err.message)
-//     }
 
-// })
-
-
-
-
-// // Pagination System
-
-
-// router.get('', async (req, resp) => {
-//     try {
-//         //pagination
 //         const page = req.query.page || 1
-//         const size = req.query || 15
+//         const size = req.query.size || 15
 
-//         //  page = 1 then (page - 1) = 0, then skip 0 items , limit (size) //1 - 15 items
-//         //  page = 2 then (page - 1 ) = 1,,, skip = ((page - 1 ) * size) = 15 items and limit (size) // 16-30 items 
+//         const query = { gender: "Female" }
 
+//         // skip() and limit()
+//         // const userdata = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+//         const userdata = await User.find(query).skip((page - 1) * size).limit(size).lean().exec()
+//         // console.log(userdata)
 
-//         // //using skip and limit
-//         const userdata = await User.find().skip((page - 1) * size).limit(size).lean().exec()
-
-
-//         // // Total Documents
-//         // const TotalDocuments = await User.find().countDocuments()
-
-
-//         // TotalPages  (Math.ceil will give us the Upper Value total number with out decimal number)
-//         const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
+//         // const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
+//         const TotalPages = Math.ceil((await User.find(query).countDocuments()) / size)
+//         // console.log(TotalPages)
 
 //         return resp.status(200).send({ userdata, TotalPages })
 //     }
@@ -58,9 +87,36 @@ const User = require("../model/user.model")
 
 // })
 
+// router.post('/', async (req, resp) => {
+//     try {
+//         const userdata = await User.create(req.body)
+//         // return resp.status(200).send(user)
+//         return resp.status(201).send({ userdata })
+
+//     }
+//     catch (err) {
+//         return resp.status(500).send(err.message)
+//     }
+
+// })
+
+// module.exports = router;
 
 
-// Pagination System 
+
+// ------------Fresh Code-----------------
+
+
+
+const express = require('express')
+
+const router = express.Router()
+
+const User = require("../model/user.model")
+
+
+
+//  Pagination System 
 
 router.get('', async (req, resp) => {
     try {
@@ -72,14 +128,20 @@ router.get('', async (req, resp) => {
 
         // skip() and limit()
         // const userdata = await User.find().skip((page - 1) * size).limit(size).lean().exec()
-        const userdata = await User.find(query).skip((page - 1) * size).limit(size).lean().exec()
         // console.log(userdata)
 
-        // const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
-        const TotalPages = Math.ceil((await User.find(query).countDocuments()) / size)
+        const users = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+
+        //with query
+        // const users = await User.find(query).skip((page - 1) * size).limit(size).lean().exec()
+
+        const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
+
+        //with query
+        // const TotalPages = Math.ceil((await User.find(query).countDocuments()) / size)
         // console.log(TotalPages)
 
-        return resp.status(200).send({ userdata, TotalPages })
+        return resp.status(200).send({ users, TotalPages })
     }
     catch (err) {
         return resp.status(500).send(err.message)
@@ -87,17 +149,5 @@ router.get('', async (req, resp) => {
 
 })
 
-router.post('/', async (req, resp) => {
-    try {
-        const userdata = await User.create(req.body)
-        // return resp.status(200).send(user)
-        return resp.status(201).send({ userdata })
-
-    }
-    catch (err) {
-        return resp.status(500).send(err.message)
-    }
-
-})
 
 module.exports = router;
