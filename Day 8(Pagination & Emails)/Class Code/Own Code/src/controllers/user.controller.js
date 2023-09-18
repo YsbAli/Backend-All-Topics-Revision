@@ -11,12 +11,37 @@ const User = require("../model/user.model")
 
 //our router will be :  /users,,,, /users is defined in app.use there, that's why use here only "/" or ""
 
+// router.get('', async (req, resp) => {
+//     try {
+//         const userdata = await User.find().lean().exec()
+//         // return resp.status(200).send(user)
+//         return resp.status(200).send({ userdata })
+//     }
+//     catch (err) {
+//         return resp.status(500).send(err.message)
+//     }
+
+// })
+
+
+
+
+// Pagination System
+
 router.get('', async (req, resp) => {
     try {
-        const user = await User.find().lean().exec()
-        // return resp.status(200).send(user)
-        return resp.status(200).send({user})
+        //pagination
+        const page = req.query.page || 1
+        const size = req.query || 15
 
+        //  page = 1 then (page - 1) = 0, then skip 0 items , limit (size) //1 - 15 items
+        //  page = 2 then (page - 1 ) = 1,,, skip = ((page - 1 ) * size) = 15 items and limit (size) // 16-30 items 
+
+
+        //using skip and limit
+        const userdata = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+
+        return resp.status(200).send({ userdata })
     }
     catch (err) {
         return resp.status(500).send(err.message)
@@ -25,11 +50,11 @@ router.get('', async (req, resp) => {
 })
 
 
-router.post('', async (req, resp) => {
+router.post('/', async (req, resp) => {
     try {
-        const user = await User.create(req.body)
+        const userdata = await User.create(req.body)
         // return resp.status(200).send(user)
-        return resp.status(201).send({user})
+        return resp.status(201).send({ userdata })
 
     }
     catch (err) {

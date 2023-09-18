@@ -2,6 +2,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 const ConnectDB = require('./config/db')
 
 const UserController = require('./controllers/user.controller')
