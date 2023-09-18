@@ -14,4 +14,6 @@
 
 # 7 - MVC (Model Views Controllers)
 
+# 8 - Pagination & Email
+
 
