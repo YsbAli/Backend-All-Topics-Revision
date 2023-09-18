@@ -189,19 +189,137 @@
 
 
 
+// const express = require('express')
+
+// const router = express.Router()
+
+// const User = require("../model/user.model")
+
+// const nodemailer = require("nodemailer");
+
+
+
+
+
+// //  Pagination System 
+
+// router.get('', async (req, resp) => {
+//     try {
+
+//         const page = req.query.page || 1
+//         const size = req.query.size || 15
+
+//         const query = { gender: "Female" }
+
+//         const users = await User.find().skip((page - 1) * size).limit(size).lean().exec()
+
+//         const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
+
+//         return resp.status(200).send({ users, TotalPages })
+//     }
+//     catch (err) {
+//         return resp.status(500).send(err.message)
+//     }
+
+// })
+
+
+
+// // Email 
+
+
+// router.post('', async (req, resp) => {
+//     try {
+
+//         const transporter = nodemailer.createTransport({
+//             host: "sandbox.smtp.mailtrap.io",
+//             port: 587,
+//             secure: false,
+//             auth: {
+//                 // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+//                 user: "416ee8e8f907fe",
+//                 pass: "247a390a39df4a",
+//             },
+//         });
+
+//             // send mail with defined transport object
+//             const info = await transporter.sendMail({
+//                 from: '"Fred Foo 👻" <foo@example.com>', // sender address
+//                 to: "bar@example.com, baz@example.com", // list of receivers
+//                 subject: "Hello ✔", // Subject line
+//                 text: "Hello world?", // plain text body
+//                 html: "<h1> Hello Buddy! This is for <h2>NodeMailer </h2>testing </h1>", // html body
+//             });
+//             return resp.send("Mail Send")
+//     }
+//     catch (err) {
+//         return resp.send(err.message)
+//     }
+// })
+
+
+
+
+
+
+
+// module.exports = router;
+
+
+
+
+
+
+
+
+
+
+
+
+//  This is Fresh and Advanced Code For Sending Email
+
+
+
 const express = require('express')
+const User = require("../model/user.model")
+
+const { SendMail } = require('../utils')
+
 
 const router = express.Router()
 
-const User = require("../model/user.model")
 
-const nodemailer = require("nodemailer");
-
+// Optimised and advanced code....
 
 
+router.post('', async (req, resp) => {
+    try {
+        const users = await User.create(req.body)
+        console.log(users)
+
+        await SendMail({
+            from: "admin@shantech.com",
+            to: users.email,           //to the users email
+            subject: "Welcome You Our Websites!",
+            text: "Please Varify your Email Address!",
+            html: "<h1> Please Varify your Email Address!</h1>"
+        })
+
+        // from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        // to: "bar@example.com, baz@example.com", // list of receivers
+        // subject: "Hello ✔", // Subject line
+        // text: "Hello world?", // plain text body
+        // html: "<h1> Hello Buddy! This is for <h2>NodeMailer</h2>testing</h1>", // html body
 
 
-//  Pagination System 
+        return resp.send("Send Mail")
+    }
+    catch (err) {
+        return resp.send(err.message)
+    }
+})
+
+
 
 router.get('', async (req, resp) => {
     try {
@@ -222,42 +340,6 @@ router.get('', async (req, resp) => {
     }
 
 })
-
-
-
-// Email 
-
-
-router.post('', async (req, resp) => {
-    try {
-
-        const transporter = nodemailer.createTransport({
-            host: "sandbox.smtp.mailtrap.io",
-            port: 587,
-            secure: false,
-            auth: {
-                // TODO: replace `user` and `pass` values from <https://forwardemail.net>
-                user: "416ee8e8f907fe",
-                pass: "247a390a39df4a",
-            },
-        });
-
-            // send mail with defined transport object
-            const info = await transporter.sendMail({
-                from: '"Fred Foo 👻" <foo@example.com>', // sender address
-                to: "bar@example.com, baz@example.com", // list of receivers
-                subject: "Hello ✔", // Subject line
-                text: "Hello world?", // plain text body
-                html: "<h1> Hello Buddy! This is for <h2>NodeMailer </h2>testing </h1>", // html body
-            });
-            return resp.send("Mail Send")
-    }
-    catch (err) {
-        return resp.send(err.message)
-    }
-})
-
-
 
 
 
