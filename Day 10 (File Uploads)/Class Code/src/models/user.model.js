@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
     gender: { type: String, required: false, default: 'Male' },
     age: { type: Number, required: true },
     ip_address: [{ type: String, required: false }],
-    birth_date: { type: Number, required: true },
+    // birth_date: { type: Number, required: true },
     profile_pic: [{ type: String }],
 },
     {

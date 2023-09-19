@@ -1,13 +1,37 @@
+
+//  ---------------------This is for profile_pic upload commit ---------------------
+
+
+
 const express = require('express')
 
 const User = require("../models/user.model")
 
 const router = express.Router()
 
+// const path = require("path")
 
-router.post("", async (req, resp) => {
+const Uploads = require('../middleware/FileUpload')
+
+
+//for single version
+router.post("/single", Uploads.single("profile_pic"), async (req, resp) => {
     try {
-        const user = await User.find().lean().exec()
+        const user = await User.create({
+            id: req.body.id,
+
+            first_Name: req.body.first_Name,
+
+            last_Name: req.body.last_Name,
+
+            email: req.body.email,
+
+            password: req.body.password,
+
+            age: req.body.age,
+
+            profile_pic: req.file.path,           //here req.file.path  (path is for file path)
+        })
         return resp.status(201).send(user)
     }
     catch (err) {
@@ -16,25 +40,26 @@ router.post("", async (req, resp) => {
 })
 
 
-router.get('', async (req, resp) => {
+//multiple version
+router.post("/multiple", async (req, resp) => {
     try {
-
-        const page = req.query.page || 1
-        const size = req.query.size || 15
-
-        const query = { gender: "Female" }
-
-        const users = await User.find().skip((page - 1) * size).limit(size).lean().exec()
-
-        const TotalPages = Math.ceil((await User.find().countDocuments()) / size)
-
-        return resp.status(200).send({ users, TotalPages })
+        const user = await User.create({})
+        return resp.status(201).send(user)
     }
     catch (err) {
         return resp.status(500).send(err.message)
     }
-
 })
 
 
+
 module.exports = router;
+
+
+
+
+
+
+
+
+
