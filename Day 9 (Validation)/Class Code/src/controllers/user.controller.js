@@ -208,10 +208,8 @@ const { body, validationResult } = require('express-validator');
 // Now See Custom Message -----> .withMessage("Error Messag")    .bail() ---> this will skip() next code
 
 router.post("",
-
-
-   //for id
-    body("id").isNumeric().withMessage("Id should not be a Number!").bail()
+    //for id
+    body("id").isNumeric().withMessage("Id should be a Number!").bail()
         .custom(async (value) => {
             const user = await User.findOne({ id: value });
             if (user) {
@@ -221,24 +219,21 @@ router.post("",
 
         }),
 
+    //for first_Name
+    // body("first_Name").isEmpty().isLowercase().isLength({ min: 3, max: 20 }).withMessage("First Name should have 3 to 20 charaters long"),
+    body("first_Name").isString().isEmpty().isLowercase().isLength({ min: 3, max: 20 }),
 
-
-
-
-        //for first_Name
-    body("first_Name").isEmpty().isLowercase().isLength({ min: 3, max: 20 }).withMessage("First Name should have 3 to 20 charaters long"),
-    
     //for last_Name
-    body("last_Name").isLowercase().isLength({ min: 3, max: 20 }).withMessage("First Name should have 3 to 20 charaters long"),
+    body("last_Name").isString().isLowercase().isLength({ min: 3, max: 20 }).withMessage("First Name should have 3 to 20 charaters long"),
 
     // for ip_address
-    body("ip_address").notEmpty().isIP(),                      
+    body("ip_address").notEmpty().isIP(),
 
     //for age
-    body("age").isNumeric(),                 
+    body("age").isNumeric(),
 
     //for birth_dateor
-    body("birth_date").isDate(),            
+    body("birth_date").isDate(),
 
     //for email validation and duplicate email 
     body("email").isEmail().custom(async (value) => {
@@ -267,12 +262,38 @@ router.post("",
     }),
 
 
+    // async (req, resp) => {
+    //     try {
+    //         const errors = validationResult(req);
+    //         // error = []
+    //         if (!errors.isEmpty()) {
+    //             return resp.status(400).json({ errors: errors.array() });
+    //         }
+
+    //         return resp.send("Working")
+    //     }
+    //     catch (err) {
+    //         return resp.send(err.message)
+    //     }
+    // })
+
+
+    //Custom Error ---> for returning only the error key or feilds and the message 
+
     async (req, resp) => {
         try {
             const errors = validationResult(req);
             // error = []
+
             if (!errors.isEmpty()) {
-                return resp.status(400).json({ errors: errors.array() });
+                let NewErrors;
+                NewErrors = errors.array().map((err) => {
+                    console.log("Error", err)
+                    // return { key: err.param, message: err.msg }
+                    return { key: err.path, message: err.msg }
+                })
+                return resp.status(400).send({ errors: NewErrors })
+                // return resp.status(400).json({ errors: errors.array() });
             }
 
             return resp.send("Working")
@@ -281,15 +302,6 @@ router.post("",
             return resp.send(err.message)
         }
     })
-
-
-
-
-
-
-
-
-
 
 
 
