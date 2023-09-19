@@ -13,13 +13,13 @@ router.post("", async (req, res) => {
     eventEmitter.on("User Registered2", adminMail);
 
     eventEmitter.emit("User Registered", {
-      from: "admin@Shantech.com",
+      from: "admin@masai.com",
       to: user.email,
       user,
     });
 
     eventEmitter.emit("User Registered2", {
-      from: "admin@Shantech.com",
+      from: "admin@masai.com",
       to: [
         "adm1@gmail.com",
         "adm12@gmail.com",
@@ -45,7 +45,7 @@ router.get("", async (req, res) => {
       .limit(size)
       .lean.exec();
 
-    // const totalPages = Math.ceil((await User.find().countDocuments()) / size);
+    const totalPages = Math.ceil((await User.find().countDocuments()) / size);
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
