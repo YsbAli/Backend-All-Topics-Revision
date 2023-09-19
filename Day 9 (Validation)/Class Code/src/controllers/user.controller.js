@@ -64,8 +64,8 @@ const { body, validationResult } = require('express-validator');
 
 router.post("",
     body("id").notEmpty().isNumeric(),
-    body("first_Name").isEmpty().isLowercase().isLength({ min: 3, max: 20 }),
-    body("last_Name").isEmpty().isLowercase().isLength({ min: 3, max: 20 }),                     // isEmpty will also check the Space
+    body("first_Name").isString().isEmpty().isLowercase().isLength({ min: 3, max: 20 }),
+    body("last_Name").isString().isEmpty().isLowercase().isLength({ min: 3, max: 20 }),                     // isEmpty will also check the Space
 
     body("ip_address").notEmpty(),           //--> it will check empty array             
 
