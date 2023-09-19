@@ -12,7 +12,11 @@ const router = express.Router()
 const { body, validationResult } = require('express-validator');
 
 
-//id validation
+
+
+
+// id validation
+
 // router.post("", body("id").notEmpty().isNumeric(),                   //body("id")   should not be empty,,,isNumeric() --> check its number or not
 //     async (req, resp) => {
 //         // console.log(body('id'))    //it will give us all the validation function inside body method
@@ -90,16 +94,6 @@ const { body, validationResult } = require('express-validator');
 //     })
 
 
-
-
-
-
-// ______________ Second Part _______________Custom Validation__________________
-
-
-
-
-
 // Email Custom Validation
 
 // router.post("",
@@ -112,7 +106,6 @@ const { body, validationResult } = require('express-validator');
 //         if (user) {
 //             throw new Error("E-mail is already exists")
 //         }
-//            return true;
 
 //     }),
 
@@ -133,18 +126,69 @@ const { body, validationResult } = require('express-validator');
 
 
 
-//custom id validation
+// id validation custumly
+
+// router.post("",
+
+//     body("id").isNumeric().custom(async (value) => {
+//         const user = await User.findOne({ id: value });
+//         if (user) {
+//             throw new Error("Id already exists")
+//         }
+//         return true;
+
+//     }),
+//     async (req, resp) => {
+//         try {
+//             const errors = validationResult(req);
+//             // error = []
+//             if (!errors.isEmpty()) {
+//                 return resp.status(400).json({ errors: errors.array() });
+//             }
+
+//             return resp.send("Working")
+//         }
+//         catch (err) {
+//             return resp.send(err.message)
+//         }
+//     })
+
+
+
+
+
+//Password Validation customly using Regex
+
 
 router.post("",
 
-    body("id").isNumeric().custom(async (value) => {
-        const user = await User.findOne({ id: value });
-        if (user) {
-            throw new Error("Id already exists")
+    // body("id").isNumeric().custom(async (value) => {
+    //     const user = await User.findOne({ id: value });
+    //     if (user) {
+    //         throw new Error("Id already exists")
+    //     }
+    //     return true;
+
+    // }),
+
+    //   body("password").isStrongPassword()                      //----> it's given by express-validator
+
+    //  use this inside /-----/   ------> ^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$
+
+    //    like this ----> /  ^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$ /
+
+    body("password").isLength({ min: 8, max: 20 }).custom((value) => {
+
+        let pattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+
+        if (pattern.test(value)) {
+            return true;
         }
-        return true;
+        throw new Error("Password is Not Storng")
 
     }),
+
+
     async (req, resp) => {
         try {
             const errors = validationResult(req);
@@ -159,6 +203,12 @@ router.post("",
             return resp.send(err.message)
         }
     })
+
+
+
+
+
+
 
 router.get('', async (req, resp) => {
     try {
