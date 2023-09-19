@@ -90,21 +90,61 @@ const { body, validationResult } = require('express-validator');
 //     })
 
 
+
+
+
+
+// ______________ Second Part _______________Custom Validation__________________
+
+
+
+
+
 // Email Custom Validation
 
-router.post("",
-    body("id").notEmpty().isNumeric(),
-    // body("first_Name").isEmpty().isLowercase().isLength({ min: 3, max: 20 }),
-    body("last_Name").isLowercase().isLength({ min: 3, max: 20 }),
+// router.post("",
+//     body("id").notEmpty().isNumeric(),
+//     // body("first_Name").isEmpty().isLowercase().isLength({ min: 3, max: 20 }),
+//     body("last_Name").isLowercase().isLength({ min: 3, max: 20 }),
 
-    body("email").isEmail().custom(async (value) => {
-        const user = await User.findOne({ email: value });
+//     body("email").isEmail().custom(async (value) => {
+//         const user = await User.findOne({ email: value });
+//         if (user) {
+//             throw new Error("E-mail is already exists")
+//         }
+//            return true;
+
+//     }),
+
+//     async (req, resp) => {
+//         try {
+//             const errors = validationResult(req);
+//             // error = []
+//             if (!errors.isEmpty()) {
+//                 return resp.status(400).json({ errors: errors.array() });
+//             }
+
+//             return resp.send("Working")
+//         }
+//         catch (err) {
+//             return resp.send(err.message)
+//         }
+//     })
+
+
+
+//custom id validation
+
+router.post("",
+
+    body("id").isNumeric().custom(async (value) => {
+        const user = await User.findOne({ id: value });
         if (user) {
-            throw new Error("E-mail is already exists")
+            throw new Error("Id already exists")
         }
+        return true;
 
     }),
-
     async (req, resp) => {
         try {
             const errors = validationResult(req);
@@ -119,8 +159,6 @@ router.post("",
             return resp.send(err.message)
         }
     })
-
-
 
 router.get('', async (req, resp) => {
     try {
