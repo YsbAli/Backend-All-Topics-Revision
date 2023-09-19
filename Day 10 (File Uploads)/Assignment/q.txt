@@ -1,0 +1,11 @@
+Create a user model which has the following things
+first_name
+last_name
+profile_pic ( can be 1 only )
+Create a gallery model which will belong to the user
+pictures ( multiple images are allowed )
+user_id ( belong to the user)
+Create endpoints for
+Creating a user
+Updating a user ( if profile pic is updated then you need to delete that file from your local server and upload this and change the path in the profile_pic)
+Deleting a user ( In this case also the file should be deleted from the server)
