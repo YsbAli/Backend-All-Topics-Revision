@@ -40,17 +40,34 @@ router.post("/single", Uploads.single("profile_pic"), async (req, resp) => {
 })
 
 
+
 //multiple version
-router.post("/multiple", async (req, resp) => {
+router.post("/multiple", Uploads.any("profile_pic"),async (req, resp) => {
+
     try {
-        const user = await User.create({})
+        const filePaths = req.files.map(file=> file.path)              // this is for the each file path,,,
+        const user = await User.create({
+            id: req.body.id,
+
+            first_Name: req.body.first_Name,
+
+            last_Name: req.body.last_Name,
+
+            email: req.body.email,
+
+            password: req.body.password,
+
+            age: req.body.age,
+
+            // profile_pic: req.file.path,           //here req.file.path  (path is for file path)
+            profile_pic: filePaths,                // we are giving the each file path inside the filePaths variable
+        })
         return resp.status(201).send(user)
     }
     catch (err) {
         return resp.status(500).send(err.message)
     }
 })
-
 
 
 module.exports = router;
