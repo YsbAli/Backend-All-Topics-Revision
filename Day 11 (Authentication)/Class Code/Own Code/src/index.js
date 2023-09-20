@@ -8,6 +8,8 @@ const ConnectDB = require('./configs/db')
 
 const UserController = require('./controllers/user.controller')
 
+const ProductController = require("./controllers/product.controller")
+
 
 const { Register, Login } = require("./controllers/auth.controller")
 
@@ -20,6 +22,10 @@ app.post("/login", Login)
 
 
 app.use('/users', UserController)
+
+app.use('/products', ProductController)
+
+
 
 app.listen(4011, async () => {
 

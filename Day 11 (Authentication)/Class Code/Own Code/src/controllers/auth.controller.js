@@ -205,7 +205,9 @@ const Register = async (req, resp) => {
         if (user) {
             return resp.status(400).send({ message: "Email is Already Exists" })
         }
+        
         user = await User.create(req.body)
+
         const token = NewToken(user)
 
         return resp.status(200).send({ user, token })
@@ -232,6 +234,7 @@ const Login = async (req, resp) => {
         if (!match) {
             return resp.status(400).send({ message: "Please try another email or password" })
         }
+
         const token = NewToken(user)
 
         return resp.status(200).send({ user, token })
