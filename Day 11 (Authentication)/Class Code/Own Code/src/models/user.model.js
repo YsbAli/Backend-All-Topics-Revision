@@ -20,6 +20,7 @@
 
 
 
+
 const mongoose = require('mongoose')
 
 const bcrypt = require('bcryptjs')
@@ -67,6 +68,7 @@ UserSchema.pre("save", function (next) {
 
 // ------------------------ Fresh Code ~ Hashing Part-------------------
 
+/*
 
 UserSchema.pre('save', function (next) {
 
@@ -79,6 +81,26 @@ UserSchema.pre('save', function (next) {
     return next()
 })
 
+
+*/
+
+
+// -----------------------------This is for Password Checking,,,,, Login Part
+
+
+// // here we are defining the CheckPassword function for checking the password,,, passign function and checking with the previous function
+
+// UserSchema.methods.CheckPassword = function (password) {
+//     return bcrypt.compareSync(password, this.password)     //password--> login time typed password,,,, this.password ---> registered time typed password    //compareSync is given by bcryptjs package ,,, this function is used to check login password and the registered password are same or not...........
+// }
+
+
+// .........Fresh Code
+
+UserSchema.methods.CheckPassword = function (password){
+    return bcrypt.compareSync(password, this.password)
+
+}
 
 const User = mongoose.model("userauth", UserSchema)    //userdata: userdatas
 

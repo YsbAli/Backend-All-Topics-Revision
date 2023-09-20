@@ -114,6 +114,8 @@
 // -------------------------Fresh Code For Register------------------------------------
 
 
+/*
+
 const User = require('../models/user.model')
 
 const JWT = require("jsonwebtoken")
@@ -150,18 +152,84 @@ const Register = async (req, resp) => {
 }
 
 
+*/
 
 
 
+// __________________LOGIN_______________________________
 
-const Login = (req, resp) => {
+
+// const Login = async (req, resp) => {
+//     try {
+
+//         //we will find the user with the email provided
+//         const user = await User.findOne({ email: req.body.email })
+
+//         //if user not found then return error
+
+//         if (!user) {
+//             return resp.status(400).send({ message: "Please try another email or password" })
+//         }
+
+
+//         // if user found then we will match the password
+
+//         // -------->// we will check in the user.model.js file
+
+//         // const match = req.body.password
+
+//         // CheckPassword is defined in user.model 
+//         const match = user.CheckPassword(req.body.password)
+
+//         if (!match) {
+//             return resp.status(400).send({ message: "Please try another email or password" })
+//         }
+
+//         // create JWT token
+//         const token = NewToken(user)
+
+//         return resp.status(200).send({ user, token })
+//     }
+//     catch (err) {
+//         return resp.status(500).send(err.message)
+//     }
+// }
+
+
+
+// --------------------------------Login Fresh------------------------------------
+
+
+const Login = async (req, resp) => {
     try {
-        resp.send("Login")
+
+        //we will find the user with the email provided
+        const user = await User.findOne({ email: req.body.email })
+
+        //if user not found then return error
+        if (!user) {
+            return resp.status(400).send({ message: "Please try another email or password" })
+        }
+
+       // if user found then we will match the password
+        // CheckPassword is defined in user.model 
+        const match = user.CheckPassword(req.body.password)
+
+        if (!match) {
+            return resp.status(400).send({ message: "Please try another email or password" })
+        }
+
+        // create JWT token
+        const token = NewToken(user)
+
+        return resp.status(200).send({ user, token })
     }
     catch (err) {
         return resp.status(500).send(err.message)
     }
 }
+
+
 
 
 module.exports = { Register, Login }
