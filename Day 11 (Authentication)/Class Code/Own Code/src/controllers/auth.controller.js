@@ -20,27 +20,7 @@ const Register = async (req, resp) => {
 
 
         //then we will hash the password to make the password more secure (besically we encrype the password so that no one can see it)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //  --- First install bcryptjs,,,npm i bcryptjs
 
 
 
