@@ -1,0 +1,12 @@
+first auth controller go through register 
+logic
+// hash the password using  using bcrypt and generate the token to send at the frontend
+
+login =
+logic =
+hash the password and compare the password with each other 
+
+git init
+git status
+touch.gitignore
+git status
