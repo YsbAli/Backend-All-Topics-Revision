@@ -1,4 +1,10 @@
 
+
+
+
+/*
+
+
 const passport = require('passport')
 
 require("dotenv").config()
@@ -52,3 +58,59 @@ passport.use(new GoogleStrategy({
 
 
 module.exports = passport;
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+// _____________________Fresh Code For Google OAuth __________________________
+
+
+
+const passport = require('passport')
+
+require("dotenv").config()
+
+const { v4: uuidv4 } = require("uuid")
+
+const User = require('../models/user.model')
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:4012/auth/google/callback"
+},
+    async function (accessToken, refreshToken, profile, cb) {
+        let user = await User.findOne({ email: profile?.email }).lean().exec()
+
+        if (!user) {
+            user = await User.create({
+                email: profile?.email,
+                password: uuidv4(),
+                role: ["customer"]
+            })
+        }
+        console.log("user", user)
+        return cb(null, "user")
+
+    }
+));
+
+
+module.exports = passport;
+
+
+
+
+
+
+
