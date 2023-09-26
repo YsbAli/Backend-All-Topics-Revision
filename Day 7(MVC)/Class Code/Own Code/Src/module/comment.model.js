@@ -9,7 +9,7 @@ const CommentSchema = new mongoose.Schema({
         ref: "post",
         require: true,
     }
-},
+}, 
     {
         versionKey: false,
         timestamps: true,
